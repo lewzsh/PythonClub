@@ -1,3 +1,4 @@
 # PythonClub
 
-Assignment 1 & 2 for IT 112
+Assignments for IT 112
+

@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from .models import Meeting, MeetingMinutes, Resource, Event
 import datetime
+from .forms import MeetingForm, ResourceForm
 
 # Create your tests here.
 
@@ -60,3 +61,34 @@ class EventTest(TestCase):
 
     def test_tablename(self):
         self.assertEqual(str(Event._meta.db_table), 'event')
+
+class ResourceFormTest(TestCase):
+    def test_resourceForm(self):
+        data = {'resourcename': 'TestTest',
+                'resourcetype': 'website',
+                'resourceurl': 'https://google.com',
+                'dateentered': '2021-2-22',
+                'userid': 'lewis',
+                'description': 'Testing if is_valid'}
+        form = ResourceForm(data)
+        self.assertTrue(form.is_valid)
+
+
+    #FIXME: this fails to check that an empty form is invalid. 
+    # Test description says 'valid=Unknown' so perhaps explicitly stating 
+    # parameters that render the form invalid is in order?  
+
+    # def test_resourceForm_empty(self):
+    #     data = {}
+    #     form = ResourceForm(data)
+    #     self.assertFalse(form.is_valid)
+
+class MeetingFormTest(TestCase):
+    def test_meetingForm(self):
+        data = {'meetingtitle': 'TestMeeting',
+                'meetingdate': '2021-2-22',
+                'meetingtime': 'noon',
+                'location': 'Somewhere nice',
+                'agenda': 'Testing if is_valid'}
+        form = MeetingForm(data)
+        self.assertTrue(form.is_valid)

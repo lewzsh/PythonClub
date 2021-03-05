@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from .models import Meeting, MeetingMinutes, Resource, Event
 import datetime
 from .forms import MeetingForm, ResourceForm
+from django.urls import reverse
 
 # Create your tests here.
 
@@ -92,3 +93,49 @@ class MeetingFormTest(TestCase):
                 'agenda': 'Testing if is_valid'}
         form = MeetingForm(data)
         self.assertTrue(form.is_valid)
+
+class MeetingFormAuthTest(TestCase):
+    def setUp(self):
+        self.test_user = User.objects.create_user(username = 'testuser1', password = 'P@ssw0rd1')
+        self.meeting = Meeting.objects.create( 
+                                meetingtitle = 'Code Wars',
+                                meetingdate = datetime.date(2021, 2, 20),
+                                meetingtime = datetime.time(18, 30),
+                                location = 'Warehouse',
+                                agenda = 'Hacker triathalon')
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(reverse('submitmeeting'))
+        self.assertRedirects(response, '/accounts/login/?next=/Club/submitmeeting/')
+    
+    def test_logged_in_uses_correct_template(self):
+        login = self.client.login(username = 'testuser1', password = 'P@ssw0rd1')
+        response = self.client.get(reverse('submitmeeting'))
+        
+        self.assertEqual(str(response.context['user']), 'testuser1')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'Club/submitmeeting.html')
+
+
+class ResourceFormAuthTest(TestCase):
+    def setUp(self):
+        self.test_user = User.objects.create_user(username = 'testuser1', password = 'P@ssw0rd1')
+        self.resource = Resource.objects.create(
+                                userid = self.test_user,
+                                resourcename = 'SCC',
+                                resourcetype = 'school',
+                                resourceurl = 'https://seattlecentral.edu/',
+                                dateentered = datetime.date(2020, 10, 1),
+                                description = 'Local community college with certificate and degree programs')
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(reverse('submitresource'))
+        self.assertRedirects(response, '/accounts/login/?next=/Club/submitresource/')
+    
+    def test_logged_in_uses_correct_template(self):
+        login = self.client.login(username = 'testuser1', password = 'P@ssw0rd1')
+        response = self.client.get(reverse('submitresource'))
+        
+        self.assertEqual(str(response.context['user']), 'testuser1')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'Club/submitresource.html')

@@ -74,16 +74,6 @@ class ResourceFormTest(TestCase):
         form = ResourceForm(data)
         self.assertTrue(form.is_valid)
 
-
-    #FIXME: this fails to check that an empty form is invalid. 
-    # Test description says 'valid=Unknown' so perhaps explicitly stating 
-    # parameters that render the form invalid is in order?  
-
-    # def test_resourceForm_empty(self):
-    #     data = {}
-    #     form = ResourceForm(data)
-    #     self.assertFalse(form.is_valid)
-
 class MeetingFormTest(TestCase):
     def test_meetingForm(self):
         data = {'meetingtitle': 'TestMeeting',

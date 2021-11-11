@@ -1,4 +1,3 @@
-# PythonClub
+# Python Club Django app
 
-Assignments for IT 112
-
+Django app demonstrating MVC, creating and authenticating forms in Django, user/membership role management and login, and more. 
